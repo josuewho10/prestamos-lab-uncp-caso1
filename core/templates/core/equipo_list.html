@@ -1,0 +1,99 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Catálogo de Equipos{% endblock title %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-pc-display"></i> Catálogo de Equipos</h2>
+    {% if user.is_authenticated and user.es_admin %}
+        <a href="{% url 'equipo_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nuevo Equipo
+        </a>
+    {% endif %}
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-4">
+                <input type="text" name="q" class="form-control" placeholder="🔍 Buscar por código, nombre o categoría" value="{{ q }}">
+            </div>
+            <div class="col-md-3">
+                <select name="laboratorio" class="form-select">
+                    <option value="">Todos los laboratorios</option>
+                    {% for lab in laboratorios %}
+                        <option value="{{ lab.id }}" {% if lab.id|stringformat:"s" == lab_seleccionado %}selected{% endif %}>{{ lab.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="operativo" {% if estado_seleccionado == 'operativo' %}selected{% endif %}>Operativo</option>
+                    <option value="mantenimiento" {% if estado_seleccionado == 'mantenimiento' %}selected{% endif %}>Mantenimiento</option>
+                    <option value="baja" {% if estado_seleccionado == 'baja' %}selected{% endif %}>Baja</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Marca/Modelo</th>
+                    <th>Categoría</th>
+                    <th>Laboratorio</th>
+                    <th>Estado</th>
+                    <th>Mant. (días)</th>
+                    {% if user.is_authenticated and user.es_admin %}
+                        <th>Acciones</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for eq in equipos %}
+                <tr>
+                    <td><code>{{ eq.codigo_patrimonial }}</code></td>
+                    <td>{{ eq.nombre }}</td>
+                    <td>{{ eq.marca }} {{ eq.modelo }}</td>
+                    <td>{{ eq.get_categoria_display }}</td>
+                    <td>{{ eq.laboratorio.nombre }}</td>
+                    <td><span class="badge bg-{{ eq.color_estado }}">{{ eq.get_estado_display }}</span></td>
+                    <td>{{ eq.dias_desde_mantenimiento|default_if_none:"—" }}</td>
+                    
+                    {% if user.is_authenticated and user.es_admin %}
+                    <td>
+                        <a href="{% url 'equipo_edit' eq.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'equipo_delete' eq.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="{% if user.is_authenticated and user.es_admin %}8{% else %}7{% endif %}" class="text-center text-muted py-4">
+                        No hay equipos registrados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="alert alert-info mt-3 text-center">
+    <i class="bi bi-info-circle"></i> 
+    Estás viendo el catálogo en modo lectura. 
+    <a href="{% url 'login' %}" class="alert-link">Inicia sesión</a> para solicitar préstamos o gestionar equipos.
+</div>
+{% endif %}
+
+{% endblock content %}

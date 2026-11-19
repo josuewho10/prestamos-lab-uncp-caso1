@@ -1,0 +1,9 @@
+﻿{% extends 'base.html' %}
+{% block content %}
+<div class="alert alert-danger">
+  <h4><i class="bi bi-shield-exclamation"></i> Error de Seguridad CSRF</h4>
+  <p>La solicitud fue rechazada por motivos de seguridad.</p>
+  <p><small>{{ reason }}</small></p>
+  <a href="{% url 'dashboard' %}" class="btn btn-primary">Volver al inicio</a>
+</div>
+{% endblock content %}

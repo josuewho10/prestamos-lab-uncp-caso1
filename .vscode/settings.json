@@ -1,0 +1,11 @@
+﻿{
+    "editor.formatOnSave": false,
+    "files.associations": {
+        "*.html": "html"
+    },
+    "[html]": {
+        "editor.defaultFormatter": null,
+        "editor.formatOnSave": false
+    },
+    "prettier.enable": false
+}

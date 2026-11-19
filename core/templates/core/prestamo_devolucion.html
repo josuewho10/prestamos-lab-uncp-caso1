@@ -1,0 +1,34 @@
+﻿{% extends 'base.html' %}
+{% block title %}Devolver Prestamo{% endblock title %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-arrow-return-left"></i> Registrar Devolucion</h2>
+<div class="card mb-3">
+  <div class="card-body">
+    <h5>Informacion del Prestamo #{{ prestamo.pk }}</h5>
+    <ul class="list-unstyled">
+      <li><strong>Docente:</strong> {{ prestamo.docente.get_full_name }}</li>
+      <li><strong>Equipo:</strong> {{ prestamo.equipo }}</li>
+      <li><strong>Fecha de prestamo:</strong> {{ prestamo.fecha_prestamo|date:"d/m/Y H:i" }}</li>
+      <li><strong>Fecha esperada:</strong> {{ prestamo.fecha_devolucion_esperada|date:"d/m/Y H:i" }}</li>
+    </ul>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Confirmar Devolucion</button>
+      <a href="{% url 'prestamo_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock content %}

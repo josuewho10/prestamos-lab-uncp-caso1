@@ -1,0 +1,15 @@
+﻿{% extends 'base.html' %}
+{% block title %}Eliminar Equipo{% endblock title %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h4 class="text-danger"><i class="bi bi-exclamation-triangle"></i> Confirmar Eliminacion</h4>
+    <p>Esta seguro de eliminar el equipo <strong>{{ equipo }}</strong>?</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Si, eliminar</button>
+      <a href="{% url 'equipo_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock content %}
